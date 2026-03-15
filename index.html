@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="mosque-gold">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>mac-weird-keys — Workshop DIY</title>
+  <meta name="description" content="A Workshop-DIY educational web app — learn Mac keyboard symbols, shortcuts & weird keys!" />
+  <meta name="author" content="Workshop-DIY — abourdim" />
+
+  <meta property="og:title" content="mac-weird-keys — Workshop DIY" />
+  <meta property="og:description" content="Learn Mac keyboard symbols, shortcuts & weird keys!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="icon-512.png" />
+
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#08091a" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Righteous&family=Tajawal:wght@400;500;700&family=Bangers&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- SPLASH SCREEN -->
+  <div class="splash" id="splash" onclick="dismissSplash()">
+    <div class="splash-inner">
+      <div class="splash-logo" id="splashLogo"></div>
+      <div class="splash-title">Mac Weird Keys</div>
+      <div class="splash-sub" data-i18n="subtitle">Find & copy symbols you can't type!</div>
+      <div class="splash-hint" data-i18n="splashHint">tap to skip</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="deco-band top-band" aria-hidden="true"></div>
+
+    <div class="rows-container">
+
+      <!-- HEADER -->
+      <div class="header">
+        <div class="bismillah" aria-hidden="true">
+          <span class="bism-ornament">&#x2726;</span>
+          بِسْمِ ٱللَّٰهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+          <span class="bism-ornament">&#x2726;</span>
+        </div>
+
+        <div class="title-block">
+          <div class="logo-wrap" id="logoWrap"></div>
+          <div>
+            <h1 data-i18n="title">Mac Weird Keys</h1>
+            <div class="subtitle" data-i18n="subtitle">Find & copy symbols you can't type!</div>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-buttons">
+            <button id="helpBtn" class="btn-icon-only" aria-label="Help">&#10067;</button>
+            <button id="settingsBtn" class="btn-icon-only" aria-label="Settings">&#9881;&#65039;</button>
+            <button id="logBtn" class="btn-icon-only" aria-label="Activity Log">&#128220;</button>
+          </div>
+          <div class="status-pill" id="statusPill">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText" data-i18n="statusReady">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYMBOL GRID -->
+      <div class="card" id="mainCard">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="icon">&#128268;</span> <span data-i18n="symbolGrid">Symbol Grid</span></div>
+            <div class="card-subtitle"><span data-i18n="symbolGridDesc">Click any symbol to see info & copy it</span> <span class="version-tag">v3.0</span></div>
+          </div>
+        </div>
+        <div class="category-tabs" id="categoryTabs"></div>
+        <div class="symbol-grid" id="symbolGrid"></div>
+      </div>
+
+      <!-- SYMBOL INFO CARD -->
+      <div class="card symbol-info-card" id="symbolInfoCard" style="display:none">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span class="icon">&#128270;</span> <span data-i18n="symbolInfo">Symbol Info</span></div>
+          </div>
+          <button id="closeInfoBtn" class="btn-sm">&#10005;</button>
+        </div>
+        <div class="symbol-info-body" id="symbolInfoBody"></div>
+      </div>
+
+      <!-- INTERACTIVE KEYBOARD -->
+      <details class="collapsible" id="keyboardSection">
+        <summary><span class="icon">&#9000;</span> <span data-i18n="interactiveKeyboard">Interactive Keyboard</span></summary>
+        <div class="card">
+          <div class="keyboard-controls">
+            <div class="layout-toggle">
+              <button class="btn-sm layout-btn active" data-layout="azerty" data-i18n="azerty">AZERTY</button>
+              <button class="btn-sm layout-btn" data-layout="qwerty" data-i18n="qwerty">QWERTY</button>
+            </div>
+            <button class="btn-sm" id="xrayBtn"><span class="btn-icon">&#128065;</span> <span data-i18n="xrayMode">X-Ray Mode</span></button>
+          </div>
+          <div class="keyboard-display" id="keyboardDisplay"></div>
+          <p class="hint" data-i18n="keyboardHint">Click any key to see its hidden symbols (Option & Shift+Option)</p>
+        </div>
+      </details>
+
+      <!-- VIRTUAL KEYBOARD (Type & Copy) -->
+      <details class="collapsible" id="virtualKbSection">
+        <summary><span class="icon">&#9000;</span> <span data-i18n="virtualKeyboard">Virtual Keyboard</span></summary>
+        <div class="card">
+          <div class="vkb-os-tabs" id="vkbOsTabs">
+            <button class="btn-sm vkb-os-tab active" data-os="mac">&#63743; Mac</button>
+            <button class="btn-sm vkb-os-tab" data-os="windows">&#8862; Windows</button>
+          </div>
+          <div class="vkb-tabs" id="vkbTabs">
+            <button class="btn-sm vkb-tab active" data-layout="azerty" data-os="mac">AZERTY</button>
+            <button class="btn-sm vkb-tab" data-layout="qwerty" data-os="mac">QWERTY</button>
+            <button class="btn-sm vkb-tab" data-layout="arabic" data-os="mac">&#1593;&#1585;&#1576;&#1610;</button>
+            <button class="btn-sm vkb-tab" data-layout="win_azerty_fr" data-os="windows" style="display:none">AZERTY FR</button>
+            <button class="btn-sm vkb-tab" data-layout="win_qwerty" data-os="windows" style="display:none">QWERTY</button>
+            <button class="btn-sm vkb-tab" data-layout="win_arabic" data-os="windows" style="display:none">&#1593;&#1585;&#1576;&#1610;</button>
+          </div>
+          <div class="vkb-compare-bar" id="vkbCompareBar">
+            <button class="btn-sm vkb-compare-btn" id="vkbCompareBtn">🔀 Compare: OFF</button>
+          </div>
+          <div class="vkb-textarea-wrap">
+            <textarea id="vkbTextarea" class="vkb-textarea" rows="3" readonly placeholder="Click keys to type here..."></textarea>
+            <div class="vkb-textarea-actions">
+              <button class="btn-sm" id="vkbCopyBtn"><span class="btn-icon">&#128203;</span> <span data-i18n="copy">Copy</span></button>
+              <button class="btn-sm" id="vkbClearBtn"><span class="btn-icon">&#129529;</span> <span data-i18n="clear">Clear</span></button>
+            </div>
+          </div>
+          <div class="vkb-modifiers" id="vkbModifiers">
+            <button class="btn-sm vkb-mod" data-mod="shift">&#8679; Shift</button>
+            <button class="btn-sm vkb-mod" data-mod="opt">&#8997; Option</button>
+            <button class="btn-sm vkb-mod" data-mod="shiftOpt">&#8679;&#8997; Shift+Option</button>
+          </div>
+          <div class="vkb-keyboard" id="vkbKeyboard"></div>
+          <p class="hint" data-i18n="vkbHint">Click modifier keys to reveal hidden characters, then click a letter</p>
+        </div>
+      </details>
+
+      <!-- ADVANCED SECTION -->
+      <details class="collapsible" id="advancedSection">
+        <summary><span class="icon">&#128736;</span> <span data-i18n="advanced">Advanced</span></summary>
+        <div class="card advanced-card">
+
+      <!-- KEYBOARD DETECTIVE GAME -->
+      <details class="collapsible" id="detectiveSection">
+        <summary><span class="icon">&#128269;</span> <span data-i18n="detectiveGame">Keyboard Detective</span></summary>
+        <div class="card">
+          <div class="detective-header">
+            <p class="hint" data-i18n="findDifferences">Find the keys that are different between AZERTY and QWERTY!</p>
+            <div class="detective-score">
+              <span>✅ <span id="detectiveFound">0</span>/<span id="detectiveTotal">0</span></span>
+              <span>🔥 <span id="detectiveStreak">0</span></span>
+            </div>
+            <button class="btn-sm" id="detectiveResetBtn">🔄 <span data-i18n="newGame">Reset</span></button>
+          </div>
+          <div class="detective-boards" id="detectiveBoards">
+            <div class="detective-board">
+              <div class="detective-board-label">AZERTY</div>
+              <div class="detective-keyboard" id="detectiveAzerty"></div>
+            </div>
+            <div class="detective-board">
+              <div class="detective-board-label">QWERTY</div>
+              <div class="detective-keyboard" id="detectiveQwerty"></div>
+            </div>
+          </div>
+          <div class="detective-message" id="detectiveMessage"></div>
+        </div>
+      </details>
+
+      <!-- LEARN TO TYPE — FINGER GUIDE -->
+      <details class="collapsible" id="fingerGuideSection">
+        <summary><span class="icon">&#128400;</span> <span data-i18n="learnToType">Learn to Type</span></summary>
+        <div class="card">
+          <div class="finger-tabs" id="fingerTabs">
+            <button class="btn-sm finger-tab active" data-ftab="zones">🎨 <span data-i18n="fingerZones">Finger Zones</span></button>
+            <button class="btn-sm finger-tab" data-ftab="finder">🔍 <span data-i18n="fingerFinder">Finger Finder</span></button>
+            <button class="btn-sm finger-tab" data-ftab="practice">🎯 <span data-i18n="practiceMode">Practice</span></button>
+          </div>
+          <div class="finger-layout-bar">
+            <button class="btn-sm finger-layout-btn active" data-flayout="qwerty">QWERTY</button>
+            <button class="btn-sm finger-layout-btn" data-flayout="azerty">AZERTY</button>
+          </div>
+
+          <!-- Tab 1: Finger Zones -->
+          <div class="finger-content" id="fingerZonesContent">
+            <div class="finger-keyboard" id="fingerZonesKeyboard"></div>
+            <div class="finger-legend" id="fingerLegend"></div>
+            <div class="finger-home-hint">
+              💡 <span data-i18n="homeRowHint">Feel the bumps on F and J! That's where your index fingers rest.</span>
+            </div>
+          </div>
+
+          <!-- Tab 2: Finger Finder -->
+          <div class="finger-content" id="fingerFinderContent" style="display:none">
+            <p class="hint" data-i18n="fingerFinderHint">Click any key to see which finger types it!</p>
+            <div class="finger-keyboard" id="fingerFinderKeyboard"></div>
+            <div class="finger-result" id="fingerFinderResult"></div>
+          </div>
+
+          <!-- Tab 3: Practice -->
+          <div class="finger-content" id="fingerPracticeContent" style="display:none">
+            <div class="practice-levels" id="practiceLevels">
+              <button class="btn-sm practice-level active" data-level="home">🏠 Home Row</button>
+              <button class="btn-sm practice-level" data-level="top">⬆ Top Row</button>
+              <button class="btn-sm practice-level" data-level="bottom">⬇ Bottom Row</button>
+              <button class="btn-sm practice-level" data-level="all">⭐ All Keys</button>
+            </div>
+            <div class="practice-prompt" id="practicePrompt">
+              <div class="practice-target" id="practiceTarget">F</div>
+              <div class="practice-finger-hint" id="practiceFingerHint">Left Index</div>
+            </div>
+            <div class="finger-keyboard" id="practiceKeyboard"></div>
+            <div class="practice-stats">
+              <span>✅ <span id="practiceCorrect">0</span></span>
+              <span>❌ <span id="practiceErrors">0</span></span>
+              <span>🔥 <span id="practiceStreak">0</span></span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- WRONG KEYBOARD SIMULATOR -->
+      <details class="collapsible" id="wrongKbSection">
+        <summary><span class="icon">&#128260;</span> <span data-i18n="wrongKbSim">Wrong Keyboard Simulator</span></summary>
+        <div class="card">
+          <p class="hint" data-i18n="wrongKbDesc">Type text and see what happens on other keyboard layouts! Ever typed gibberish because the wrong layout was active?</p>
+
+          <div class="wkb-mode-tabs">
+            <button class="btn-sm wkb-mode active" data-wmode="simulate">🔄 <span data-i18n="simulateMode">Simulate</span></button>
+            <button class="btn-sm wkb-mode" data-wmode="decode">🔍 <span data-i18n="decodeMode">Decode</span></button>
+          </div>
+
+          <!-- SIMULATE MODE -->
+          <div class="wkb-content" id="wkbSimulateContent">
+            <div class="wkb-source-bar">
+              <label data-i18n="typingOn">Typing on:</label>
+              <select class="wkb-select" id="wkbSourceSelect">
+                <option value="qwerty">QWERTY</option>
+                <option value="azerty">AZERTY</option>
+              </select>
+            </div>
+            <textarea class="wkb-input" id="wkbInput" rows="2" placeholder="Type here..."></textarea>
+            <div class="wkb-results" id="wkbResults"></div>
+          </div>
+
+          <!-- DECODE MODE -->
+          <div class="wkb-content" id="wkbDecodeContent" style="display:none">
+            <p class="hint" data-i18n="decodeHint">Paste the gibberish text and we'll figure out what it was supposed to say!</p>
+            <textarea class="wkb-input" id="wkbDecodeInput" rows="2" placeholder="Paste gibberish here..."></textarea>
+            <button class="btn-sm" id="wkbDecodeBtn">🔍 <span data-i18n="decode">Decode</span></button>
+            <div class="wkb-decode-results" id="wkbDecodeResults"></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- MAC TIPS (Special Keys + Secrets) -->
+      <details class="collapsible" id="macTipsSection">
+        <summary><span class="icon">&#8984;</span> <span data-i18n="macTips">Mac Tips</span></summary>
+        <div class="card">
+          <h3 class="mac-tips-heading" data-i18n="macSpecialKeys">Mac Special Keys</h3>
+          <div class="special-keys-grid" id="specialKeysGrid"></div>
+          <h3 class="mac-tips-heading" data-i18n="macSecrets">Mac Secrets</h3>
+          <div class="secrets-grid" id="secretsGrid"></div>
+        </div>
+      </details>
+
+        </div>
+      </details>
+      <!-- END ADVANCED SECTION -->
+
+      <!-- QUIZ -->
+      <details class="collapsible">
+        <summary><span class="icon">&#127942;</span> <span data-i18n="challenge">Challenge Mode</span></summary>
+        <div class="card">
+          <div class="quiz-area" id="quizArea">
+            <div class="quiz-prompt" id="quizPrompt"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-score">
+              <span data-i18n="streak">Streak:</span> <span id="quizStreak">0</span> &nbsp;
+              <span data-i18n="best">Best:</span> <span id="quizBest">0</span>
+            </div>
+            <button class="primary" id="nextQuizBtn" data-i18n="nextChallenge">Next Challenge</button>
+          </div>
+        </div>
+      </details>
+
+      <!-- CHEAT SHEET -->
+      <details class="collapsible">
+        <summary><span class="icon">&#128203;</span> <span data-i18n="cheatSheet">Cheat Sheet</span></summary>
+        <div class="card">
+          <p class="hint" data-i18n="cheatSheetDesc">All weird symbols and how to type them on your Mac</p>
+          <div class="cheat-table-wrap" id="cheatTableWrap"></div>
+          <button class="btn-sm" id="copyCheatBtn" style="margin-top:8px"><span class="btn-icon">&#128203;</span> <span data-i18n="copyCheatSheet">Copy Cheat Sheet</span></button>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+      <span class="footer-text">powered by <a href="https://workshop-diy.org" target="_blank" rel="noopener">workshop-diy.org</a></span>
+      <span class="hijri-date" id="hijriDate"></span>
+    </footer>
+
+    <div class="deco-band bottom-band" aria-hidden="true"></div>
+  </div>
+
+  <canvas id="matrixCanvas" class="matrix-canvas"></canvas>
+
+  <div id="debugPanel" class="debug-panel">
+    <span id="debugFps">0 FPS</span>
+    <span id="debugMem">0 MB</span>
+  </div>
+
+  <!-- LEFT PANEL — Help -->
+  <div class="sidebar-overlay" id="helpOverlay"></div>
+  <aside class="sidebar sidebar-left" id="helpPanel" aria-label="Help" role="dialog" aria-modal="true">
+    <div class="sidebar-header">
+      <span class="sidebar-title" data-i18n="help">&#10067; Help</span>
+      <button id="helpCloseBtn" class="btn-icon-only" aria-label="Close">&#10005;</button>
+    </div>
+
+    <div class="help-tabs">
+      <button class="help-tab active" data-tab="faq" data-i18n="faq">FAQ</button>
+      <button class="help-tab" data-tab="howto" data-i18n="howto">How-To</button>
+      <button class="help-tab" data-tab="wiki" data-i18n="wiki">Wiki</button>
+    </div>
+
+    <div class="sidebar-body">
+      <div class="help-content active" id="helpFaq">
+        <details class="help-item">
+          <summary data-i18n="faq_q1">What is Mac Weird Keys?</summary>
+          <p data-i18n="faq_a1">An app to find, learn about, and copy symbols you can't easily type on your Mac keyboard.</p>
+        </details>
+        <details class="help-item">
+          <summary data-i18n="faq_q2">How do I copy a symbol?</summary>
+          <p data-i18n="faq_a2">Click any symbol in the grid — it gets copied to your clipboard automatically!</p>
+        </details>
+        <details class="help-item">
+          <summary data-i18n="faq_q3">What is X-Ray Mode?</summary>
+          <p data-i18n="faq_a3">X-Ray Mode shows all hidden characters behind Option and Shift+Option key combos.</p>
+        </details>
+        <details class="help-item">
+          <summary data-i18n="faq_q4">Is my data private?</summary>
+          <p data-i18n="faq_a4">Yes. Everything runs locally in your browser. No data is sent anywhere.</p>
+        </details>
+      </div>
+
+      <div class="help-content" id="helpHowto">
+        <div class="help-step">
+          <span class="help-step-num">1</span>
+          <p data-i18n="howto_1">Browse the Symbol Grid — symbols are grouped by category.</p>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">2</span>
+          <p data-i18n="howto_2">Click any symbol to see its name, shortcut, fun fact, and copy it.</p>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">3</span>
+          <p data-i18n="howto_3">Open the Interactive Keyboard to explore hidden characters.</p>
+        </div>
+        <div class="help-step">
+          <span class="help-step-num">4</span>
+          <p data-i18n="howto_4">Try Challenge Mode to test your knowledge!</p>
+        </div>
+      </div>
+
+      <div class="help-content" id="helpWiki">
+        <div class="wiki-entry">
+          <h3 data-i18n="wiki_keys_title">&#9000; Modifier Keys</h3>
+          <p data-i18n="wiki_keys">Mac has 4 modifier keys: Command, Option, Control, Shift. Option is the key to most hidden symbols!</p>
+        </div>
+        <div class="wiki-entry">
+          <h3 data-i18n="wiki_layouts_title">&#9000; Keyboard Layouts</h3>
+          <p data-i18n="wiki_layouts">AZERTY is the French layout. QWERTY is the English/US layout. Symbols are in different places!</p>
+        </div>
+        <div class="wiki-entry">
+          <h3 data-i18n="wiki_privacy_title">&#128274; Privacy</h3>
+          <p data-i18n="wiki_privacy">Local-first, privacy-first. All data stays in your browser. No tracking, no analytics.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span>Workshop DIY</span>
+      <span class="badge"><strong>v3.0</strong></span>
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL — Settings -->
+  <div class="sidebar-overlay" id="settingsOverlay"></div>
+  <aside class="sidebar" id="settingsPanel" aria-label="Settings" role="dialog" aria-modal="true">
+    <div class="sidebar-header">
+      <span class="sidebar-title" data-i18n="settings">&#9881;&#65039; Settings</span>
+      <button id="settingsCloseBtn" class="btn-icon-only" aria-label="Close">&#10005;</button>
+    </div>
+
+    <div class="sidebar-body">
+      <div class="sidebar-group">
+        <label class="sidebar-label" data-i18n="language">Language</label>
+        <select id="langSelect" class="sidebar-select" aria-label="Language">
+          <option value="en" selected>EN</option>
+          <option value="fr">FR</option>
+          <option value="ar">AR</option>
+        </select>
+      </div>
+      <div class="sidebar-group">
+        <label class="sidebar-label" data-i18n="theme">Theme</label>
+        <select id="themeSelect" class="sidebar-select" aria-label="Theme">
+          <option value="mosque-gold" data-i18n-opt="t_mosque">Mosque</option>
+          <option value="zellige" data-i18n-opt="t_zellige">Zellige</option>
+          <option value="andalus" data-i18n-opt="t_andalus">Andalus</option>
+          <option value="riad" data-i18n-opt="t_riad">Riad</option>
+          <option value="medina" data-i18n-opt="t_medina">Medina</option>
+          <option value="space" data-i18n-opt="t_space">Space</option>
+          <option value="jungle" data-i18n-opt="t_jungle">Jungle</option>
+          <option value="robot" data-i18n-opt="t_robot">Robot</option>
+        </select>
+      </div>
+      <div class="sidebar-group">
+        <label class="toggle-ctrl">
+          <input type="checkbox" id="soundToggle" class="checkbox-ctrl" />
+          <span data-i18n="soundEffects">Sound effects</span>
+        </label>
+      </div>
+      <div class="sidebar-group">
+        <button id="whisperBtn" class="btn-sm" style="width:100%"><span class="btn-icon">&#127908;</span> <span data-i18n="whisperMode">Whisper mode</span></button>
+      </div>
+      <div class="sidebar-group">
+        <button id="breathingBtn" class="btn-sm" style="width:100%"><span class="btn-icon">&#129707;</span> <span data-i18n="breathingGuide">Breathing guide</span></button>
+        <div class="dhikr-display" id="dhikrDisplay" style="display:none">
+          <span class="dhikr-label">سبحان الله</span>
+          <span class="dhikr-count" id="dhikrCounter">0</span>
+          <button id="dhikrBtn" class="btn-sm primary"><span data-i18n="dhikrTap">Tap</span></button>
+        </div>
+      </div>
+      <div class="sidebar-group">
+        <button id="musicBtn" class="btn-sm" style="width:100%"><span class="btn-icon">&#127925;</span> <span data-i18n="musicMode">Music reactive</span></button>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span>Workshop DIY</span>
+      <span class="badge"><strong>v3.0</strong></span>
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL — Activity Log -->
+  <aside class="sidebar" id="logPanel" aria-label="Activity Log">
+    <div class="resize-handle" id="logResizeHandle"></div>
+    <div class="sidebar-header">
+      <span class="sidebar-title" data-i18n="activityLog">Activity Log</span>
+      <div class="log-controls">
+        <button id="clearLogBtn" class="btn-sm"><span class="btn-icon">&#129529;</span><span data-i18n="clear">Clear</span></button>
+        <button id="copyLogBtn" class="btn-sm"><span class="btn-icon">&#128203;</span><span data-i18n="copy">Copy</span></button>
+        <button id="exportLogBtn" class="btn-sm"><span class="btn-icon">&#128190;</span><span data-i18n="export">Export</span></button>
+        <button id="logCloseBtn" class="btn-icon-only" aria-label="Close">&#10005;</button>
+      </div>
+    </div>
+
+    <div class="log-filters" id="logFilters">
+      <button class="log-filter active" data-filter="all" data-i18n="filterAll">All</button>
+      <button class="log-filter" data-filter="info">Info</button>
+      <button class="log-filter" data-filter="success">OK</button>
+      <button class="log-filter" data-filter="error">Err</button>
+      <button class="log-filter" data-filter="tx">TX</button>
+      <button class="log-filter" data-filter="rx">RX</button>
+    </div>
+
+    <div class="sidebar-body log-body">
+      <div class="log" id="logContainer" aria-live="polite"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span data-i18n="eventsMsg">Events &amp; messages</span>
+      <span class="badge"><strong>v3.0</strong></span>
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div id="toastIndicator" class="toast-indicator">
+    <div class="toast-inner">
+      <div class="spinner"></div>
+      <div id="toastMessage" class="toast-text">Working...</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
