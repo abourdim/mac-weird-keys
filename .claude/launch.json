@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "mac-weird-keys",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765", "-d", "/Users/Shared/repos/mac-weird-keys"],
+      "port": 8765
+    }
+  ]
+}

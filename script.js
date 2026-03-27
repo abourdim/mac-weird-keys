@@ -1255,7 +1255,7 @@ async function aiRespond(userMsg) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'sonnet',
         max_tokens: 150,
         system: systemPrompt,
         messages: chatHistory.slice(-10) // keep context short
